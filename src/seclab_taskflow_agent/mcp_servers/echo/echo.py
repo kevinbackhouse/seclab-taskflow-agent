@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import logging
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -9,7 +10,7 @@ logging.basicConfig(
     filemode='a'
 )
 #from mcp.server.fastmcp import FastMCP
-from fastmcp import FastMCP # move to FastMCP 2.0
+from fastmcp import FastMCP  # move to FastMCP 2.0
 
 mcp = FastMCP("Echo")
 

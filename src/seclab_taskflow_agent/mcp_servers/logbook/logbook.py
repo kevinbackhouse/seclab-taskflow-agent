@@ -2,6 +2,7 @@
 # SPDX-License-Identifier: MIT
 
 import logging
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -9,10 +10,11 @@ logging.basicConfig(
     filemode='a'
 )
 #from mcp.server.fastmcp import FastMCP
-from fastmcp import FastMCP # move to FastMCP 2.0
 import json
-from pathlib import Path
 import os
+from pathlib import Path
+
+from fastmcp import FastMCP  # move to FastMCP 2.0
 
 mcp = FastMCP("Logbook")
 
@@ -46,7 +48,7 @@ def inflate_log():
     ensure_log()
     global LOG
     global LOGBOOK
-    with open(LOGBOOK, 'r') as logbook:
+    with open(LOGBOOK) as logbook:
         LOG = json.loads(logbook.read())
 
 

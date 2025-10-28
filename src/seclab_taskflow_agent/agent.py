@@ -2,20 +2,32 @@
 # SPDX-License-Identifier: MIT
 
 # https://openai.github.io/openai-agents-python/agents/
-import os
 import logging
-from dotenv import load_dotenv
+import os
 from collections.abc import Callable
 from typing import Any
 from urllib.parse import urlparse
 
+from agents import (
+    Agent,
+    AgentHooks,
+    OpenAIChatCompletionsModel,
+    RunContextWrapper,
+    RunHooks,
+    Runner,
+    TContext,
+    Tool,
+    result,
+    set_default_openai_api,
+    set_default_openai_client,
+    set_tracing_disabled,
+)
+from agents.agent import FunctionToolResult, ModelSettings, ToolsToFinalOutputResult
+from agents.run import DEFAULT_MAX_TURNS, RunHooks
+from dotenv import load_dotenv
 from openai import AsyncOpenAI
-from agents.agent import ModelSettings, ToolsToFinalOutputResult, FunctionToolResult
-from agents.run import DEFAULT_MAX_TURNS
-from agents.run import RunHooks
-from agents import Agent, Runner, AgentHooks, RunHooks, result, function_tool, Tool, RunContextWrapper, TContext, OpenAIChatCompletionsModel, set_default_openai_client, set_default_openai_api, set_tracing_disabled
 
-from .capi import COPILOT_INTEGRATION_ID, COPILOT_API_ENDPOINT
+from .capi import COPILOT_API_ENDPOINT, COPILOT_INTEGRATION_ID
 
 # grab our secrets from .env, this must be in .gitignore
 load_dotenv()

@@ -7,11 +7,11 @@ Basic tests for YAML parsing functionality in the taskflow agent.
 Simple parsing + parsing of example taskflows.
 """
 
+
 import pytest
-import tempfile
-from pathlib import Path
-import yaml
+
 from seclab_taskflow_agent.available_tools import AvailableTools
+
 
 class TestYamlParser:
     """Test suite for YamlParser class."""
@@ -21,7 +21,7 @@ class TestYamlParser:
         available_tools = AvailableTools()
         personality000 = available_tools.get_personality(
             "tests.data.test_yaml_parser_personality000")
-        
+
         assert personality000['seclab-taskflow-agent']['version'] == 1
         assert personality000['seclab-taskflow-agent']['filetype'] == 'personality'
         assert personality000['personality'] == 'You are a helpful assistant.\n'

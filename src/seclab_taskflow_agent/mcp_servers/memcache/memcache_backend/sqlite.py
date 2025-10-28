@@ -1,15 +1,17 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
+import json
 import os
 from pathlib import Path
+from typing import Any
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
-from typing import Any
-import json
 
-from .sql_models import KeyValue, Base
 from .backend import Backend
+from .sql_models import Base, KeyValue
+
 
 class SqliteBackend(Backend):
     def __init__(self, memcache_state_dir: str):
@@ -28,7 +30,7 @@ class SqliteBackend(Backend):
             session.add(kv)
             session.commit()
         return 'f"Stored value in memory for `{key}`"'
-    
+
     def get_state(self, key: str) -> Any:
         with Session(self.engine) as session:
             values = session.query(KeyValue).filter_by(key=key).all()
@@ -51,7 +53,7 @@ class SqliteBackend(Backend):
                 return existing
             except TypeError:
                 return results
-    
+
     def add_state(self, key, value):
         with Session(self.engine) as session:
             kv = KeyValue(key=key, value=json.dumps(value))
@@ -64,8 +66,8 @@ class SqliteBackend(Backend):
             keys = session.query(KeyValue.key).distinct().all()
         content = ["IMPORTANT: your known memcache keys are now:\n"]
         content += [f"- {key[0]}" for key in keys]
-        return '\n'.join(content)        
-    
+        return '\n'.join(content)
+
     def get_all_entries(self) -> str:
         with Session(self.engine) as session:
             entries = session.query(KeyValue).all()

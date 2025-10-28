@@ -1,38 +1,45 @@
 # SPDX-FileCopyrightText: 2025 GitHub
 # SPDX-License-Identifier: MIT
 
-import asyncio
-from threading import Thread
 import argparse
-import os
-import sys
-from dotenv import load_dotenv
-import logging
-from logging.handlers import RotatingFileHandler
-from pprint import pprint, pformat
-import re
+import asyncio
 import json
-import uuid
+import logging
+import os
 import pathlib
-
-from .agent import DEFAULT_MODEL, TaskRunHooks, TaskAgentHooks
-#from agents.run import DEFAULT_MAX_TURNS # XXX: this is 10, we need more than that
-from agents.exceptions import MaxTurnsExceeded, AgentsException
-from agents.agent import ModelSettings
-from agents.mcp import MCPServer, MCPServerStdio, MCPServerSse, MCPServerStreamableHttp, create_static_tool_filter
-from agents.extensions.handoff_prompt import prompt_with_handoff_instructions
-from agents import Tool, RunContextWrapper, TContext, Agent
-from openai import BadRequestError, APITimeoutError, RateLimitError
-from openai.types.responses import ResponseTextDeltaEvent
+import re
+import sys
+import uuid
+from logging.handlers import RotatingFileHandler
+from pprint import pformat
 from typing import Callable
 
-from .shell_utils import shell_tool_call
-from .mcp_utils import DEFAULT_MCP_CLIENT_SESSION_TIMEOUT, ReconnectingMCPServerStdio, AsyncDebugMCPServerStdio, MCPNamespaceWrap, mcp_client_params, mcp_system_prompt, StreamableMCPThread, compress_name
-from .render_utils import render_model_output, flush_async_output
-from .env_utils import TmpEnv
-from .agent import TaskAgent
-from .capi import list_tool_call_models
+from agents import Agent, RunContextWrapper, TContext, Tool
+from agents.agent import ModelSettings
+
+#from agents.run import DEFAULT_MAX_TURNS # XXX: this is 10, we need more than that
+from agents.exceptions import AgentsException, MaxTurnsExceeded
+from agents.extensions.handoff_prompt import prompt_with_handoff_instructions
+from agents.mcp import MCPServerSse, MCPServerStdio, MCPServerStreamableHttp, create_static_tool_filter
+from dotenv import load_dotenv
+from openai import APITimeoutError, BadRequestError, RateLimitError
+from openai.types.responses import ResponseTextDeltaEvent
+
+from .agent import DEFAULT_MODEL, TaskAgent, TaskAgentHooks, TaskRunHooks
 from .available_tools import AvailableTools
+from .capi import list_tool_call_models
+from .env_utils import TmpEnv
+from .mcp_utils import (
+    DEFAULT_MCP_CLIENT_SESSION_TIMEOUT,
+    MCPNamespaceWrap,
+    ReconnectingMCPServerStdio,
+    StreamableMCPThread,
+    compress_name,
+    mcp_client_params,
+    mcp_system_prompt,
+)
+from .render_utils import flush_async_output, render_model_output
+from .shell_utils import shell_tool_call
 
 load_dotenv()
 
@@ -74,7 +81,7 @@ def parse_prompt_args(available_tools: AvailableTools,
         args = parser.parse_known_args(user_prompt.split(' ') if user_prompt else None)
     except SystemExit as e:
         if e.code == 2:
-            logging.error(f"User provided incomplete prompt: {user_prompt}")
+            logging.exception(f"User provided incomplete prompt: {user_prompt}")
             return None, None, None, help_msg
     p = args[0].p.strip() if args[0].p else None
     t = args[0].t.strip() if args[0].t else None
@@ -218,14 +225,13 @@ async def deploy_task_agents(available_tools: AvailableTools,
                         except Exception as e:
                             print(f"Streamable mcp server process exception: {e}")
                 except asyncio.CancelledError:
-                    logging.error(f"Timeout on cleanup for mcp server: {server._name}")
+                    logging.exception(f"Timeout on cleanup for mcp server: {server._name}")
                 finally:
                     mcp_servers.remove(s)
         except RuntimeError as e:
-            logging.error(f"RuntimeError in mcp session task: {e}")
+            logging.exception(f"RuntimeError in mcp session task: {e}")
         except asyncio.CancelledError as e:
-            logging.error(f"Timeout on main session task: {e}")
-            pass
+            logging.exception(f"Timeout on main session task: {e}")
         finally:
             mcp_servers.clear()
 
@@ -318,17 +324,17 @@ async def deploy_task_agents(available_tools: AvailableTools,
                         return
                     except APITimeoutError:
                         if not max_retry:
-                            logging.error(f"Max retries for APITimeoutError reached")
+                            logging.exception("Max retries for APITimeoutError reached")
                             raise
                         max_retry -= 1
                     except RateLimitError:
                         if rate_limit_backoff == MAX_RATE_LIMIT_BACKOFF:
-                            raise APITimeoutError(f"Max rate limit backoff reached")
+                            raise APITimeoutError("Max rate limit backoff reached")
                         if rate_limit_backoff > MAX_RATE_LIMIT_BACKOFF:
                             rate_limit_backoff = MAX_RATE_LIMIT_BACKOFF
                         else:
                             rate_limit_backoff += rate_limit_backoff
-                        logging.error(f"Hit rate limit ... holding for {rate_limit_backoff}")
+                        logging.exception(f"Hit rate limit ... holding for {rate_limit_backoff}")
                         await asyncio.sleep(rate_limit_backoff)
             await _run_streamed()
             complete = True
@@ -338,22 +344,22 @@ async def deploy_task_agents(available_tools: AvailableTools,
             await render_model_output(f"** 🤖❗ Max Turns Reached: {e}\n",
                                 async_task=async_task,
                                 task_id=task_id)
-            logging.error(f"Exceeded max_turns: {max_turns}")
+            logging.exception(f"Exceeded max_turns: {max_turns}")
         except AgentsException as e:
             await render_model_output(f"** 🤖❗ Agent Exception: {e}\n",
                                 async_task=async_task,
                                 task_id=task_id)
-            logging.error(f"Agent Exception: {e}")
+            logging.exception(f"Agent Exception: {e}")
         except BadRequestError as e:
             await render_model_output(f"** 🤖❗ Request Error: {e}\n",
                                 async_task=async_task,
                                 task_id=task_id)
-            logging.error(f"Bad Request: {e}")
+            logging.exception(f"Bad Request: {e}")
         except APITimeoutError as e:
             await render_model_output(f"** 🤖❗ Timeout Error: {e}\n",
                                 async_task=async_task,
                                 task_id=task_id)
-            logging.error(f"Bad Request: {e}")
+            logging.exception(f"Bad Request: {e}")
 
         if async_task:
             await flush_async_output(task_id)
@@ -369,10 +375,10 @@ async def deploy_task_agents(available_tools: AvailableTools,
             try:
                 cleanup_attempts_left -= 1
                 await asyncio.wait_for(mcp_sessions, timeout=MCP_CLEANUP_TIMEOUT)
-            except asyncio.TimeoutError as e:
+            except asyncio.TimeoutError:
                 continue
             except Exception as e:
-                logging.error(f"Exception in mcp server cleanup task: {e}")
+                logging.exception(f"Exception in mcp server cleanup task: {e}")
 
 
 async def main(available_tools: AvailableTools,
@@ -425,7 +431,7 @@ async def main(available_tools: AvailableTools,
             if model_dict:
                 if not isinstance(model_dict, dict):
                     raise ValueError(f"Models section of the model_config file {model_config} must be a dictionary")
-            model_keys = model_dict.keys() 
+            model_keys = model_dict.keys()
 
         for task in taskflow['taskflow']:
 
@@ -557,7 +563,7 @@ async def main(available_tools: AvailableTools,
 
                     # if this is a shell task, execute that and append the results
                     if run:
-                        await render_model_output(f"** 🤖🐚 Executing Shell Task\n")
+                        await render_model_output("** 🤖🐚 Executing Shell Task\n")
                         # this allows e.g. shell based jq output to become available for repeat prompts
                         try:
                             result = shell_tool_call(run).content[0].model_dump_json()
@@ -565,7 +571,7 @@ async def main(available_tools: AvailableTools,
                             return True
                         except RuntimeError as e:
                             await render_model_output(f"** 🤖❗ Shell Task Exception: {e}\n")
-                            logging.error(f"Shell task error: {e}")
+                            logging.exception(f"Shell task error: {e}")
                             return False
 
                     tasks = []

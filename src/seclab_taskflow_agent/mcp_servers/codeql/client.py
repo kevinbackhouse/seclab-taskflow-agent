@@ -2,15 +2,16 @@
 # SPDX-License-Identifier: MIT
 
 # a query-server2 codeql client
-import subprocess
-import re
 import json
-from pathlib import Path
+import os
+import re
+import subprocess
 import tempfile
 import time
-from urllib.parse import urlparse, unquote
-import os
 import zipfile
+from pathlib import Path
+from urllib.parse import unquote, urlparse
+
 import yaml
 
 # this is a local fork of https://github.com/riga/jsonrpyc modified for our purposes
@@ -46,7 +47,7 @@ class CodeQL:
         self.server_options = server_options.copy()
         if log_stderr:
             os.makedirs("logs", exist_ok=True)
-            self.stderr_log = f"logs/codeql_stderr_log.log"
+            self.stderr_log = "logs/codeql_stderr_log.log"
             self.server_options.append("--log-to-stderr")
         else:
             self.stderr_log = os.devnull
@@ -271,7 +272,7 @@ class CodeQL:
 
     def _search_paths_from_codeql_config(self, config="~/.config/codeql/config"):
         try:
-            with open(config, 'r') as f:
+            with open(config) as f:
                 match = re.search(r"^--search-path(\s+|=)\s*(.*)", f.read())
                 if match and match.group(2):
                     return match.group(2).split(':')
@@ -530,7 +531,7 @@ def _file_from_src_archive(relative_path: str | Path, database_path: str | Path,
     # fall back to relative path if resolved_path does not exist (might be a build dep file)
     if str(resolved_path) not in files:
         resolved_path = Path(relative_path)
-    file_data = shell_command_to_string(["unzip", "-p", src_path, f"{str(resolved_path)}"])
+    file_data = shell_command_to_string(["unzip", "-p", src_path, f"{resolved_path!s}"])
     if region:
         def region_from_file():
             # regions are 1+ based and look like 1:2:3:4

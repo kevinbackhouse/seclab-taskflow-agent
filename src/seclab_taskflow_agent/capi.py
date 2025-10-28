@@ -2,11 +2,12 @@
 # SPDX-License-Identifier: MIT
 
 # CAPI specific interactions
-import httpx
 import json
 import logging
 import os
 from urllib.parse import urlparse
+
+import httpx
 
 # you can also set https://models.github.ai/inference if you prefer
 # but beware that your taskflows need to reference the correct model id
@@ -43,11 +44,11 @@ def list_capi_models(token: str) -> dict[str, dict]:
         for model in models_list:
             models[model.get('id')] = dict(model)
     except httpx.RequestError as e:
-        logging.error(f"Request error: {e}")
+        logging.exception(f"Request error: {e}")
     except json.JSONDecodeError as e:
-        logging.error(f"JSON error: {e}")
+        logging.exception(f"JSON error: {e}")
     except httpx.HTTPStatusError as e:
-        logging.error(f"HTTP error: {e}")
+        logging.exception(f"HTTP error: {e}")
     return models
 
 def supports_tool_calls(model: str, models: dict) -> bool:

@@ -7,12 +7,13 @@ import subprocess
 import sys
 import tempfile
 
+
 def read_file_list(list_path):
     """
     Reads a file containing file paths, ignoring empty lines and lines starting with '#'.
     Returns a list of relative file paths.
     """
-    with open(list_path, "r") as f:
+    with open(list_path) as f:
         lines = [line.strip() for line in f]
     return [line for line in lines if line and not line.startswith("#")]
 
