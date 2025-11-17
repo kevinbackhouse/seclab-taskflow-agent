@@ -429,7 +429,7 @@ models:
 A `model_config` file can be used in a `taskflow` and the values defined in `models` can then be used throughout.
 
 ```yaml
-model_config: examples.model_configs.model_config
+model_config: seclab_taskflow_agent_examples.model_configs.model_config
 
 taskflow:
   - task:

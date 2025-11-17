@@ -458,7 +458,7 @@ seclab-taskflow-agent:
   version: 1
   filetype: taskflow
 
-model_config: examples.model_configs.model_config
+model_config: seclab_taskflow_agent_examples.model_configs.model_config
 ```
 
 The variables defined in the `model_config` file can then be used throughout the taskflow, e.g.
