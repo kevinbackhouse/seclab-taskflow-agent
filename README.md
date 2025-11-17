@@ -390,7 +390,7 @@ prompt: |
   Tell me more about bananas as well.
 ```
 
-would replace any `{{ PROMPT_examples.prompts.example_prompt }}` template parameter found in the `user_prompt` section in a taskflow:
+would replace any `{{ PROMPT_seclab_taskflow_agent_examples.prompts.example_prompt }}` template parameter found in the `user_prompt` section in a taskflow:
 
 ```yaml
   - task:
@@ -399,7 +399,7 @@ would replace any `{{ PROMPT_examples.prompts.example_prompt }}` template parame
       user_prompt: |
         Tell me more about apples.
 
-        {{ PROMPTS_examples.prompts.example_prompt }}
+        {{ PROMPTS_seclab_taskflow_agent_examples.prompts.example_prompt }}
 ```
 
 becomes:

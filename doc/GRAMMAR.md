@@ -424,9 +424,9 @@ Example:
       user_prompt: |
         Tell me more about apples.
         
-        {{ PROMPTS_examples.prompts.example_prompt }}
+        {{ PROMPTS_seclab_taskflow_agent_examples.prompts.example_prompt }}
 ```
-and `examples.prompts.example_prompt` is the following:
+and `seclab_taskflow_agent_examples.prompts.example_prompt` is the following:
 
 ```yaml
 seclab-taskflow-agent:
