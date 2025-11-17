@@ -34,10 +34,10 @@ taskflow:
       repeat_prompt: true
       agents:
         # primary agent for this task
-        - examples.personalities.example_triage_agent
+        - seclab_taskflow_agent_examples.personalities.example_triage_agent
         # handoff agents
-        - examples.personalities.apple_expert
-        - examples.personalities.orange_expert
-        - examples.personalities.banana_expert
+        - seclab_taskflow_agent_examples.personalities.apple_expert
+        - seclab_taskflow_agent_examples.personalities.orange_expert
+        - seclab_taskflow_agent_examples.personalities.banana_expert
       user_prompt: |
         Tell me more about how {{ RESULT }} are grown.

@@ -335,7 +335,7 @@ globals:
 taskflow:
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about {{ GLOBALS_fruit }}.
 ```
@@ -394,7 +394,7 @@ A reusable taskflow can also have a templated prompt that takes inputs from its 
 ```yaml
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about {{ INPUTS_fruit }}.
 ```
@@ -404,7 +404,7 @@ In this case, the template parameter `{{ INPUTS_fruit }}` is replaced by the val
 ```yaml
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
 ```
@@ -420,7 +420,7 @@ Example:
 ```yaml
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
         
@@ -442,7 +442,7 @@ Then the actual task becomes:
 ```yaml
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
 

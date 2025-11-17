@@ -16,7 +16,7 @@ taskflow:
       # taskflows can set a primary (first entry) and handoff (additional entries) agent
       agents:
         - seclab_taskflow_agent.personalities.c_auditer
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Store an example vulnerable C program that uses `strcpy` in the
         `vulnerable_c_example` memory key and explain why `strcpy`

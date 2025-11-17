@@ -10,6 +10,6 @@ globals:
 taskflow:
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about {{ GLOBALS_fruit }}.

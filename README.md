@@ -200,7 +200,7 @@ The `toolboxes` are the tools that are available to this `personality`. The `too
 Personalities can be used in two ways. First it can be used standalone with a prompt input from the command line:
 
 ```
-hatch run main -p examples.personalities.echo 'echo this message'
+hatch run main -p seclab_taskflow_agent_examples.personalities.echo 'echo this message'
 ```
 
 In this case, `personality` and `task` from [`examples/personalities/echo.yaml`](examples/personalities/echo.yaml) are used as the
@@ -229,7 +229,7 @@ taskflow:
   - task:
       ...
       agents:
-        - examples.personalities.echo
+        - seclab_taskflow_agent_examples.personalities.echo
       user_prompt: |
         echo this
       toolboxes:
@@ -309,7 +309,7 @@ taskflow:
       # taskflows can set a primary (first entry) and handoff (additional entries) agent
       agents:
         - seclab_taskflow_agent.personalities.c_auditer
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Store an example vulnerable C program that uses `strcpy` in the
         `vulnerable_c_example` memory key and explain why `strcpy`
@@ -395,7 +395,7 @@ would replace any `{{ PROMPT_examples.prompts.example_prompt }}` template parame
 ```yaml
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
 
@@ -407,7 +407,7 @@ becomes:
 ```yaml
   - task:
       agents:
-        - examples.personalities.fruit_expert
+        - seclab_taskflow_agent_examples.personalities.fruit_expert
       user_prompt: |
         Tell me more about apples.
 
