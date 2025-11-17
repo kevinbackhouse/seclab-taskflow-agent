@@ -58,6 +58,7 @@ jobs:
           hatch build
           hatch run main -p seclab_taskflow_agent.personalities.assistant 'explain modems to me please'
           hatch run main -p seclab_taskflow_agent.personalities.c_auditer 'explain modems to me please'
+          cd examples
           hatch run main -p seclab_taskflow_agent_examples.personalities.echo 'explain modems to me please'
           hatch run main -t seclab_taskflow_agent_examples.taskflows.CVE-2023-2283
           hatch run main -t seclab_taskflow_agent_examples.taskflows.echo
@@ -72,3 +73,4 @@ jobs:
           hatch run main -t seclab_taskflow_agent_examples.taskflows.example_reusable_taskflows
           hatch run main -t seclab_taskflow_agent_examples.taskflows.example_triage_taskflow
           hatch run main -t seclab_taskflow_agent_examples.taskflows.single_step_taskflow
+          cd ..
