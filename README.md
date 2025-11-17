@@ -74,7 +74,7 @@ hatch run main -p seclab_taskflow_agent.personalities.assistant 'explain modems 
 Example: deploying a Taskflow:
 
 ```sh
-hatch run main -t examples.taskflows.example
+hatch run main -t seclab_taskflow_agent_examples.taskflows.example
 ```
 
 ## Deploying from Docker
@@ -372,7 +372,7 @@ See the [taskflow examples](taskflows/examples) for other useful Taskflow patter
 You can run a taskflow from the command line like this:
 
 ```
-hatch run main -t examples.taskflows.CVE-2023-2283
+hatch run main -t seclab_taskflow_agent_examples.taskflows.CVE-2023-2283
 ```
 
 ## Prompts

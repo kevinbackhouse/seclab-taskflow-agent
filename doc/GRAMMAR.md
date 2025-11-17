@@ -348,7 +348,7 @@ Example:
 
 ```yaml
   - task:
-      uses: examples.taskflows.single_step_taskflow
+      uses: seclab_taskflow_agent_examples.taskflows.single_step_taskflow
       model: gpt-4o
 ```
 
@@ -386,7 +386,7 @@ A reusable taskflow can also have a templated prompt that takes inputs from its 
 
 ```yaml
   - task:
-      uses: examples.taskflows.single_step_taskflow
+      uses: seclab_taskflow_agent_examples.taskflows.single_step_taskflow
       inputs:
         fruit: apples
 ```
