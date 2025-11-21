@@ -15,13 +15,13 @@ python -m pip install hatch
 hatch build
 
 # If running in Codespaces, check for necessary secrets and print error if missing
-if [ -n "$CODESPACES" ]; then
+if [ -v CODESPACES ]; then
     echo "🔐 Running in Codespaces - injecting secrets from Codespaces settings..."
-    if [ -n "$COPILOT_TOKEN" ]; then
+    if [ ! -v COPILOT_TOKEN ]; then
         echo "Running in Codespaces - please add COPILOT_TOKEN to your Codespaces secrets"
     fi
-    if [ -n "$GITHUB_AUTH_HEADER" ]; then
-        echo "Running in Codespaces - please add GITHUB_AUTH_HEADER to your Codespaces secrets"
+    if [ ! -v GITHUB_PERSONAL_ACCESS_TOKEN ]; then
+        echo "Running in Codespaces - please add GITHUB_PERSONAL_ACCESS_TOKEN to your Codespaces secrets"
     fi
 fi
 
@@ -31,7 +31,7 @@ if [ ! -f .env ]; then
     cat > .env << 'EOF'
 
 # Optional: CodeQL database base path
-CODEQL_DBS_BASE_PATH=/workspaces/seclab-taskflow-agent/my_data
+CODEQL_DBS_BASE_PATH=/workspaces/seclab-taskflow-agent/data
 
 EOF
     echo "⚠️  Please configure the enviroment or your .env file with required tokens!"
@@ -41,10 +41,8 @@ fi
 mkdir -p logs
 
 # Create optional data directories
-mkdir -p my_data
+mkdir -p data
 
 echo "✅ Development environment setup complete!"
 echo ""
-echo "📋 Next steps:"
-echo "Configure your environment with COPILOT_TOKEN and GITHUB_AUTH_HEADER as needed."
 echo "💡 Remember to activate the virtual environment: source .venv/bin/activate"
