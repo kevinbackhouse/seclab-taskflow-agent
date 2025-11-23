@@ -39,7 +39,7 @@
   // Use 'postCreateCommand' to run commands after the container is created
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   // Use 'postStartCommand' to run commands when the container starts
-  // "postStartCommand": "",
+  "postStartCommand": "bash .devcontainer/post-start.sh",
   // Environment variables
   "containerEnv": {
     "PYTHONUNBUFFERED": "1"
