@@ -1,5 +1,5 @@
 # https://github.com/devcontainers/images/tree/main/src/universal
-FROM mcr.microsoft.com/devcontainers/universal:latest
+FROM mcr.microsoft.com/devcontainers/universal:4.1-linux
 
 # Install system dependencies
 # Note: Python and Git are installed via devcontainer features
