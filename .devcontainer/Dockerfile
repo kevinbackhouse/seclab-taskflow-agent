@@ -1,5 +1,5 @@
-# Use Ubuntu 24.04 as base image to match the current environment
-FROM mcr.microsoft.com/devcontainers/base:ubuntu-24.04
+# https://github.com/devcontainers/images/tree/main/src/universal
+FROM mcr.microsoft.com/devcontainers/universal:latest
 
 # Install system dependencies
 # Note: Python and Git are installed via devcontainer features
